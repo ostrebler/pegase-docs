@@ -12,9 +12,9 @@ import * as pegase from "pegase";
 import ColorModeSwitcher from "./ColorModeSwitcher";
 
 export default function Editor() {
-  const [demo, setDemo] = useState(sampleCode);
+  const [code, setCode] = useState(sampleCode);
   const [input, setInput] = useState("2 + (17.-2*30) *(-5)+ 2.56");
-  const [code, setCode] = useState<string | null>(null);
+  const [transpile, setTranspile] = useState<string | null>(null);
   const [output, setOutput] = useState("");
   const outputBuffer = useRef<Array<Array<any>>>([]);
 
@@ -27,7 +27,9 @@ export default function Editor() {
     });
 
     patchWindow("_pegase_console", {
+      ...console,
       log(...args: Array<any>) {
+        console.log(...args);
         outputBuffer.current.push(args);
       }
     });
@@ -35,24 +37,24 @@ export default function Editor() {
 
   useEffect(() => {
     try {
-      setCode(`
+      setTranspile(`
         var input = window._pegase_input;
         var require = window._pegase_require;
         var console = window._pegase_console;
-        ${babel.transform(demo, { presets: ["env"] }).code ?? ""}
+        ${babel.transform(code, { presets: ["env"] }).code ?? ""}
       `);
     } catch (error) {
-      setCode(null);
+      setTranspile(null);
       setOutput(`[Babel error] ${error.message}`);
     }
-  }, [demo]);
+  }, [code]);
 
   useEffect(() => {
-    if (code) {
+    if (transpile) {
       patchWindow("_pegase_input", input);
       outputBuffer.current = [];
       try {
-        new Function(code)();
+        new Function(transpile)();
         setOutput(
           outputBuffer.current.map(chunk => chunk.join(" ")).join("\n")
         );
@@ -60,7 +62,7 @@ export default function Editor() {
         setOutput(`[Runtime Error] ${error.message}`);
       }
     }
-  }, [input, code]);
+  }, [input, transpile]);
 
   return (
     <Box fontSize="md">
@@ -78,8 +80,8 @@ export default function Editor() {
               flexGrow={1}
               placeholder="Type some code using pegase"
               fontFamily='"Fira code", "Fira Mono", monospace'
-              value={demo}
-              onChange={e => setDemo(e.target.value)}
+              value={code}
+              onChange={e => setCode(e.target.value)}
             />
           </VStack>
         </GridItem>
