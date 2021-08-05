@@ -8794,10 +8794,10 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-pegase@^0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/pegase/-/pegase-0.2.5.tgz#f974fb80c6c9f2f0cd0207602876b0bab480f9ba"
-  integrity sha512-dLRJL7DmV/gtk3o1w0WMtOXwuHIsCktO464cQminYYurvbM3Bxxx/gUrSehF1cTchh4N9+UKJfqW8tZ4DdfCLw==
+pegase@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/pegase/-/pegase-0.2.6.tgz#d6750b0c20b7cc403e1627b8657c572ef995a588"
+  integrity sha512-ydV6O4+aRwUYu09Nx0BZZFDpSRCm8u0A8xv+o8mZJ3Q2LadKgVR2SDyHI9vM2ZzRyEh6rC0gtFIA+gIVWYs2AQ==
 
 performance-now@^2.1.0:
   version "2.1.0"

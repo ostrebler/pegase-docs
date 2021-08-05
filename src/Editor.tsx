@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Box,
   chakra,
   Grid,
   GridItem,
@@ -75,61 +74,60 @@ export default function Editor() {
   }, [input, transpile]);
 
   return (
-    <Box fontSize="md">
-      <Grid
-        h="100vh"
-        p={3}
-        gap={4}
-        templateRows="repeat(2, 1fr)"
-        templateColumns="repeat(2, 1fr)"
-      >
-        <GridItem rowSpan={2} colSpan={1} p={4}>
-          <VStack h="100%">
-            <Heading>Editable code</Heading>
-            <BasicCodeEditor
-              value={code}
-              onValueChange={setCode}
-              flexGrow={1}
-              width="100%"
-              placeholder="Type some code using pegase"
-              padding={theme.space["4"]}
-              highlight={code =>
-                prism.highlight(code, prism.languages.javascript, "javascript")
-              }
-            />
-          </VStack>
-        </GridItem>
-        <GridItem rowSpan={1} colSpan={1} p={4}>
-          <VStack h="100%" alignItems="left">
-            <Heading>
-              <code>const input = `</code>
-            </Heading>
-            <Textarea
-              flexGrow={1}
-              placeholder="Type your input"
-              fontFamily='"Fira code", "Fira Mono", monospace'
-              value={input}
-              onChange={e => setInput(e.target.value)}
-            />
-            <Heading>
-              <code>`;</code>
-            </Heading>
-          </VStack>
-          <ColorModeSwitcher position="absolute" top={0} right={0} />
-        </GridItem>
-        <GridItem rowSpan={1} colSpan={1} p={4}>
-          <VStack h="100%">
-            <Heading>console.log</Heading>
-            <Textarea
-              readOnly
-              flexGrow={1}
-              fontFamily='"Fira code", "Fira Mono", monospace'
-              value={output}
-            />
-          </VStack>
-        </GridItem>
-      </Grid>
-    </Box>
+    <Grid
+      h="100vh"
+      p={3}
+      fontSize="md"
+      gap={4}
+      templateRows="repeat(2, 1fr)"
+      templateColumns="repeat(2, 1fr)"
+    >
+      <GridItem rowSpan={2} colSpan={1} p={4}>
+        <VStack h="100%">
+          <Heading>Editable code</Heading>
+          <BasicCodeEditor
+            value={code}
+            onValueChange={setCode}
+            flexGrow={1}
+            width="100%"
+            placeholder="Type some code using pegase"
+            padding={theme.space["4"]}
+            highlight={code =>
+              prism.highlight(code, prism.languages.javascript, "javascript")
+            }
+          />
+        </VStack>
+      </GridItem>
+      <GridItem rowSpan={1} colSpan={1} p={4}>
+        <VStack h="100%" alignItems="left">
+          <Heading>
+            <code>const input = `</code>
+          </Heading>
+          <Textarea
+            flexGrow={1}
+            placeholder="Type your input"
+            fontFamily='"Fira code", "Fira Mono", monospace'
+            value={input}
+            onChange={e => setInput(e.target.value)}
+          />
+          <Heading>
+            <code>`;</code>
+          </Heading>
+        </VStack>
+        <ColorModeSwitcher position="absolute" top={0} right={0} />
+      </GridItem>
+      <GridItem rowSpan={1} colSpan={1} p={4}>
+        <VStack h="100%">
+          <Heading>console.log</Heading>
+          <Textarea
+            readOnly
+            flexGrow={1}
+            fontFamily='"Fira code", "Fira Mono", monospace'
+            value={output}
+          />
+        </VStack>
+      </GridItem>
+    </Grid>
   );
 }
 
