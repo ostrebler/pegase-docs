@@ -13,7 +13,7 @@ import ColorModeSwitcher from "./ColorModeSwitcher";
 
 export default function Editor() {
   const [demo, setDemo] = useState(sampleCode);
-  const [input, setInput] = useState("2 + (17-2*30) *(-5)+2");
+  const [input, setInput] = useState("2 + (17.-2*30) *(-5)+ 2.56");
   const [code, setCode] = useState<string | null>(null);
   const [output, setOutput] = useState("");
   const outputBuffer = useRef<Array<Array<any>>>([]);
@@ -137,7 +137,7 @@ const g = peg\`
   term: fact % ("*" | "/") @infix(\${calc})
   fact: num | '(' expr ')'
   num @token("integer"):
-    '-'? [0-9]+ @number
+    '-'? [0-9]+ ('.' [0-9]*)? @number
 \`;
 
 const result = g.parse(input);
