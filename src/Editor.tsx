@@ -1,15 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
+  chakra,
   Grid,
   GridItem,
   Heading,
+  shouldForwardProp,
   Textarea,
   VStack
 } from "@chakra-ui/react";
 import * as babel from "@babel/standalone";
+import inspect from "object-inspect";
 import * as pegase from "pegase";
+import CodeEditor from "react-simple-code-editor";
+import prism from "prismjs";
+import "prismjs/components/prism-javascript";
+import "prismjs/themes/prism-dark.css";
 import ColorModeSwitcher from "./ColorModeSwitcher";
+import theme from "./theme";
 
 export default function Editor() {
   const [code, setCode] = useState(sampleCode);
@@ -45,7 +53,7 @@ export default function Editor() {
       `);
     } catch (error) {
       setTranspile(null);
-      setOutput(`[Babel error] ${error.message}`);
+      setOutput(`[Babel Error] ${error.message}`);
     }
   }, [code]);
 
@@ -54,9 +62,11 @@ export default function Editor() {
       patchWindow("_pegase_input", input);
       outputBuffer.current = [];
       try {
-        new Function(transpile)();
+        new Function(transpile)(); // eslint-disable-line
         setOutput(
-          outputBuffer.current.map(chunk => chunk.join(" ")).join("\n")
+          outputBuffer.current
+            .map(chunk => chunk.map(consolify).join(" "))
+            .join("\n")
         );
       } catch (error) {
         setOutput(`[Runtime Error] ${error.message}`);
@@ -70,22 +80,26 @@ export default function Editor() {
         h="100vh"
         p={3}
         gap={4}
-        templateRows="repeat(3, 1fr)"
+        templateRows="repeat(2, 1fr)"
         templateColumns="repeat(2, 1fr)"
       >
-        <GridItem rowSpan={3} colSpan={1} p={4}>
+        <GridItem rowSpan={2} colSpan={1} p={4}>
           <VStack h="100%">
-            <Heading>Code</Heading>
-            <Textarea
-              flexGrow={1}
-              placeholder="Type some code using pegase"
-              fontFamily='"Fira code", "Fira Mono", monospace'
+            <Heading>Editable code</Heading>
+            <BasicCodeEditor
               value={code}
-              onChange={e => setCode(e.target.value)}
+              onValueChange={setCode}
+              flexGrow={1}
+              width="100%"
+              placeholder="Type some code using pegase"
+              padding={theme.space["4"]}
+              highlight={code =>
+                prism.highlight(code, prism.languages.javascript, "javascript")
+              }
             />
           </VStack>
         </GridItem>
-        <GridItem rowSpan={2} colSpan={1} p={4}>
+        <GridItem rowSpan={1} colSpan={1} p={4}>
           <VStack h="100%" alignItems="left">
             <Heading>
               <code>const input = `</code>
@@ -119,8 +133,24 @@ export default function Editor() {
   );
 }
 
+const BasicCodeEditor = chakra(CodeEditor, {
+  shouldForwardProp: prop => prop === "padding" || shouldForwardProp(prop),
+  baseStyle: {
+    fontFamily: '"Fira code", "Fira Mono", monospace',
+    "> textarea": {
+      outline: "none",
+      borderRadius: theme.radii.lg
+    }
+  }
+});
+
 function patchWindow(key: string, value: any) {
   (window as any)[key] = value;
+}
+
+function consolify(value: any) {
+  if (typeof value === "string") return value;
+  return inspect(value, { indent: 2 });
 }
 
 const sampleCode = `import peg from "pegase";
